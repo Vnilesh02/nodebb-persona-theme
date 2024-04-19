@@ -66,60 +66,50 @@
 	{posts.content}
 </div>
 
-<div class="post-footer">
-	{{{ if posts.user.signature }}}
-	<div component="post/signature" data-uid="{posts.user.uid}" class="post-signature">{posts.user.signature}</div>
-	{{{ end }}}
+<div class="post-footer d-flex justify-content-between align-items-center">
+    {{{ if posts.user.signature }}}
+    <div component="post/signature" data-uid="{posts.user.uid}" class="post-signature">{posts.user.signature}</div>
+    {{{ end }}}
+    
+    <div class="d-flex align-items-center">
+        <!-- IF !reputation:disabled -->
+        <span class="votes">
+            <a component="post/upvote" href="#">
+                <i class="fas fa-heart"></i> 
+            </a>
+            <span component="post/vote-count" data-votes="{posts.votes}" style="color: black;">{posts.votes}</span>
+        </span>
+        <!-- ENDIF !reputation:disabled -->
+        
+        <div class="d-flex align-items-center mx-3">
+            {{{ if !hideReplies }}}
+            <a component="post/reply-count" data-target-component="post/replies/container" href="#" class="threaded-replies user-select-none text-muted <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">
+                <i class="fas fa-comment" component="post/replies/open"></i>
+                <i class="fa fa-fw fa-chevron-down hidden" component="post/replies/close"></i>
+                <i class="fa fa-fw fa-spin fa-spinner hidden" component="post/replies/loading"></i>
+            </a>
+            <span class="mx-2">{{posts.replies.count}}</span>
+            {{{ end }}}	   
+        </div>
+        
+        {{{ if config.loggedIn }}}
+        <div class="mx-3">
+            <a class="dropdown-item" component="post/bookmark" role="menuitem" href="#" data-bookmarked="{posts.bookmarked}">
+                <span class="">
+                    <i component="post/bookmark/on" style="color: black;" class="fa-solid fa-bookmark <!-- IF !posts.bookmarked -->hidden<!-- ENDIF !posts.bookmarked -->"></i>
+                    <i component="post/bookmark/off" class="fa-regular fa-bookmark <!-- IF posts.bookmarked -->hidden<!-- ENDIF posts.bookmarked -->"></i>
+                </span>
+                <span component="post/bookmark-count" class="bookmarkCount badge" data-bookmarks="{posts.bookmarks}" style="color: black;">{posts.bookmarks}</span>&nbsp;
+            </a>
+        </div>
+        {{{ end }}}
+    </div>
 
-	<div class="clearfix">
-	{{{ if !hideReplies }}}
-	<a component="post/reply-count" data-target-component="post/replies/container" href="#" class="threaded-replies user-select-none float-start text-muted {{{ if (!./replies || shouldHideReplyContainer(@value)) }}}hidden{{{ end }}}">
-		<span component="post/reply-count/avatars" class="avatars d-inline-flex gap-1 align-items-top hidden-xs {{{ if posts.replies.hasMore }}}hasMore{{{ end }}}">
-			{{{each posts.replies.users}}}
-			<span>{buildAvatar(posts.replies.users, "16px", true, "")}</span>
-			{{{end}}}
-			{{{ if posts.replies.hasMore}}}
-			<span><i class="fa fa-ellipsis"></i></span>
-			{{{ end }}}
-		</span>
-
-		<span class="replies-count small" component="post/reply-count/text" data-replies="{posts.replies.count}">{posts.replies.text}</span>
-		<span class="replies-last hidden-xs small">[[topic:last-reply-time]] <span class="timeago" title="{posts.replies.timestampISO}"></span></span>
-
-		<i class="fa fa-fw fa-chevron-right" component="post/replies/open"></i>
-		<i class="fa fa-fw fa-chevron-down hidden" component="post/replies/close"></i>
-		<i class="fa fa-fw fa-spin fa-spinner hidden" component="post/replies/loading"></i>
-	</a>
-	{{{ end }}}
-
-	<small class="d-flex justify-content-end align-items-center gap-1" component="post/actions">
-		<!-- IMPORT partials/topic/reactions.tpl -->
-		<span class="post-tools">
-			<a component="post/reply" href="#" class="user-select-none <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:reply]]</a>
-			<a component="post/quote" href="#" class="user-select-none <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:quote]]</a>
-		</span>
-
-		<!-- IF !reputation:disabled -->
-		<span class="votes">
-			<a component="post/upvote" href="#" class="<!-- IF posts.upvoted -->upvoted<!-- ENDIF posts.upvoted -->">
-				<i class="fa fa-chevron-up"></i>
-			</a>
-
-			<span component="post/vote-count" data-votes="{posts.votes}">{posts.votes}</span>
-
-			<!-- IF !downvote:disabled -->
-			<a component="post/downvote" href="#" class="<!-- IF posts.downvoted -->downvoted<!-- ENDIF posts.downvoted -->">
-				<i class="fa fa-chevron-down"></i>
-			</a>
-			<!-- ENDIF !downvote:disabled -->
-		</span>
-		<!-- ENDIF !reputation:disabled -->
-
-		<!-- IMPORT partials/topic/post-menu.tpl -->
-	</small>
-	</div>
-	<div component="post/replies/container"></div>
+    <!-- IMPORT partials/topic/post-menu.tpl -->
 </div>
+
+<div component="post/replies/container"></div>
+
 {{{ if (!./index && widgets.mainpost-footer.length) }}}
 <div data-widget-area="mainpost-footer">
 	{{{ each widgets.mainpost-footer }}}
