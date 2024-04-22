@@ -8,7 +8,7 @@
   "main": "library.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NodeBB/nodebb-theme-persona"
+    "url": "https://github.com/Vnilesh02/nodebb-persona-theme"
   },
   "scripts": {
     "lint": "eslint ."
